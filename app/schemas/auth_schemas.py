@@ -1,6 +1,10 @@
 from pydantic import BaseModel
 
 
+class CurrentUser(BaseModel):
+    id: int
+
+
 class SignUpResponse(BaseModel):
     access_token: str
     refresh_token: str

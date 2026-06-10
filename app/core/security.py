@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from jose import jwt
+from jose import JWTError, jwt
 from passlib.hash import argon2
 
 from app.core.config import settings
@@ -38,3 +38,11 @@ def create_jwt_refresh_token(user_id: int):
     to_encode["type"] = "REFRESH_TOKEN"
 
     return jwt.encode(to_encode, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+
+
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+        return payload
+    except JWTError:
+        return None
