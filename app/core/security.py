@@ -10,6 +10,10 @@ def hash_password(planed_password):
     return argon2.hash(planed_password)
 
 
+def verify_password(planed_password, hashed_password):
+    return argon2.verify(planed_password, hashed_password)
+
+
 def create_jwt_access_token(data: dict):
     to_encode = data.copy()
 

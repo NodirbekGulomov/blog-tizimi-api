@@ -6,12 +6,13 @@ from app.core.security import (
     create_jwt_access_token,
     create_jwt_refresh_token,
     hash_password,
+    verify_password,
 )
 from app.db import User
-from app.schemas.auth_schemas import SignupRequest
+from app.schemas.auth_schemas import SignInRequest, SignUpRequest
 
 
-def create_user(data: SignupRequest, db: Session):
+def create_user(data: SignUpRequest, db: Session):
     user = db.execute(
         select(User.email).where(User.email == data.email)
     ).scalar_one_or_none()
@@ -32,4 +33,21 @@ def create_user(data: SignupRequest, db: Session):
     return {
         "access_token": create_jwt_access_token(access_token_data),
         "refresh_token": create_jwt_refresh_token(user_object.id),
+    }
+
+
+def handle_sign_in(data: SignInRequest, db: Session):
+    user = db.execute(select(User).where(User.email == data.email)).scalar_one_or_none()
+
+    if user is None:
+        raise HTTPException(status_code=401, detail="Email or password is not correct")
+
+    if not verify_password(data.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Email or password is not correct")
+
+    access_token_data = {"id": user.id}
+
+    return {
+        "access_token": create_jwt_access_token(access_token_data),
+        "refresh_token": create_jwt_refresh_token(user.id),
     }

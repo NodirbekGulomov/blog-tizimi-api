@@ -1,13 +1,23 @@
 from pydantic import BaseModel
 
 
-class SignupResponse(BaseModel):
+class SignUpResponse(BaseModel):
     access_token: str
     refresh_token: str
 
 
-class SignupRequest(BaseModel):
+class SignUpRequest(BaseModel):
     first_name: str
     last_name: str | None = None
+    email: str
+    password: str
+
+
+class SignInResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+
+
+class SignInRequest(BaseModel):
     email: str
     password: str
