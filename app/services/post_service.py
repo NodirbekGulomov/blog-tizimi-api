@@ -5,7 +5,6 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.db import Post, User
-from app.schemas.auth_schemas import CurrentUser
 from app.schemas.post_schemas import PostRequest, PostUpdateRequest
 
 
