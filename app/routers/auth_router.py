@@ -12,7 +12,7 @@ from app.schemas.auth_schemas import (
 from app.schemas.user_schemas import UserProfileResponse
 from app.services import auth_service, user_service
 
-router = APIRouter()
+router = APIRouter(tags=["User router"])
 
 
 @router.post("/auth/signup", response_model=SignUpResponse)
@@ -27,6 +27,6 @@ def sign_in(data: SignInRequest, db=Depends(get_db)):
 
 @router.get("/users/me", response_model=UserProfileResponse)
 def get_user_profile(
-    currentUser: CurrentUser = Depends(get_current_user), db=Depends(get_db)
+    current_user: CurrentUser = Depends(get_current_user), db=Depends(get_db)
 ):
-    return user_service.get_user_by_id(currentUser.id, db)
+    return user_service.get_user_by_id(current_user.id, db)
