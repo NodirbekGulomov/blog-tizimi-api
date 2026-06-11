@@ -27,3 +27,15 @@ def get_all_posts(user_id: int, db: Session):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication required")
     return user
+
+
+def get_post(post_id: int, user_id: int, db: Session):
+    post = db.execute(select(Post).where(Post.id == post_id)).scalar_one_or_none()
+
+    if post is None:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    if post.author_id != user_id:
+        raise HTTPException(status_code=403)
+    
+    return post

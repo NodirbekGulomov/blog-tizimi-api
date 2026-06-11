@@ -15,3 +15,8 @@ class PostResponse(BaseModel):
 class PostRequest(BaseModel):
     title: str
     content: str
+
+
+class PostUpdateRequest(BaseModel):
+    title: str | None = None
+    content: str | None = None

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from app.dependencies.auth_dependency import get_current_user
 from app.dependencies.db_dependency import get_db
 from app.schemas.auth_schemas import CurrentUser
-from app.schemas.post_schemas import PostRequest, PostResponse
+from app.schemas.post_schemas import PostRequest, PostResponse, PostUpdateRequest
 from app.services import post_service
 
 router = APIRouter(tags=["Post router"])
@@ -24,3 +24,12 @@ def get_all_posts(
     db=Depends(get_db),
 ):
     return post_service.get_all_posts(current_user.id, db)
+
+
+@router.get("/posts/{id}", response_model=PostResponse)
+def get_post(
+    id: int,
+    current_user: CurrentUser = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    return post_service.get_post(id, current_user.id, db)
