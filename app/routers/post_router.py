@@ -33,3 +33,13 @@ def get_post(
     db=Depends(get_db),
 ):
     return post_service.get_post(id, current_user.id, db)
+
+
+@router.patch("/posts/{id}")
+def update_post(
+    id: int,
+    data: PostUpdateRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    return post_service.update_post(id, data, current_user.id, db)
