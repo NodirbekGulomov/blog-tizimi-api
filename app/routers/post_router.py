@@ -43,3 +43,12 @@ def update_post(
     db=Depends(get_db),
 ):
     return post_service.update_post(id, data, current_user.id, db)
+
+
+@router.delete("/posts/{id}", status_code=204)
+def delete_post(
+    id: int,
+    current_user: CurrentUser = Depends(get_current_user),
+    db=Depends(get_db),
+):
+    return post_service.delete_post(id, current_user.id, db)

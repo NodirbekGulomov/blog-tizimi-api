@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.db import Post, User
+from app.schemas.auth_schemas import CurrentUser
 from app.schemas.post_schemas import PostRequest, PostUpdateRequest
 
 
@@ -61,3 +62,18 @@ def update_post(post_id: int, data: PostUpdateRequest, user_id: int, db: Session
     db.refresh(post)
 
     return {"message": "Post updated"}
+
+
+def delete_post(post_id: int, user_id, db: Session):
+    post = db.execute(select(Post).where(Post.id == post_id)).scalar_one_or_none()
+
+    if post is None:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    if post.author_id != user_id:
+        raise HTTPException(status_code=403)
+
+    db.execute(delete(Post).where(Post.id == post_id))
+    db.commit()
+
+    return {"message": "Post deleted"}
