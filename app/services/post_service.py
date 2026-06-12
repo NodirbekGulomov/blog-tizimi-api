@@ -29,14 +29,11 @@ def get_all_posts(user_id: int, db: Session):
     return user.posts
 
 
-def get_post(post_id: int, user_id: int, db: Session):
+def get_post(post_id: int, db: Session):
     post = db.get(Post, post_id)
 
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
-
-    if post.author_id != user_id:
-        raise HTTPException(status_code=403, detail="Forbidden")
 
     return post
 
@@ -74,3 +71,11 @@ def delete_post(post_id: int, user_id, db: Session):
     db.commit()
 
     return
+
+
+def search_posts(post_title: str, db: Session):
+    stmt = select(Post).where(Post.title.ilike(post_title))
+    posts = db.execute(stmt).scalars()
+    print('alsdkjfjfdl;ks')
+
+    return posts

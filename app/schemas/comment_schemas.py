@@ -10,8 +10,6 @@ class CommentResponse(BaseModel):
     author_id: int
     post_id: int
 
-    model_config = {"from_attributes": True}
-
 
 class CommentRequest(BaseModel):
     content: str

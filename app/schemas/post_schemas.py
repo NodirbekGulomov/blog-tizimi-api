@@ -11,8 +11,6 @@ class PostResponse(BaseModel):
     updated_at: datetime | None
     author_id: int
 
-    model_config = {"from_attributes": True}
-
 
 class PostRequest(BaseModel):
     title: str
