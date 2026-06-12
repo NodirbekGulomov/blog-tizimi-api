@@ -27,7 +27,7 @@ def create_post(data: PostRequest, user_id: int, db: Session):
 def get_all_posts(user_id: int, db: Session):
     post = db.execute(select(Post).where(Post.author_id == user_id)).scalars()
 
-    return PostResponse.model_validate(post)
+    return [PostResponse.model_validate(p) for p in post]
 
 
 def get_post(post_id: int, db: Session):

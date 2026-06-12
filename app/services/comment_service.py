@@ -1,9 +1,9 @@
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.db.models import Comment, Post
-from app.schemas.comment_schemas import CommentRequest
+from app.schemas.comment_schemas import CommentRequest, CommentResponse
 
 
 def create_comment(post_id: int, data: CommentRequest, user_id: int, db: Session):
@@ -20,10 +20,21 @@ def create_comment(post_id: int, data: CommentRequest, user_id: int, db: Session
     db.add(comment_object)
     db.commit()
 
-    return {"message": "Comment created"}
+    return CommentResponse.model_validate(comment_object)
 
 
 def delete_comment(comment_id: int, user_id: int, db: Session):
-    comment = db.execute(select(Comment).where(Comment.id==comment_id)).scalar_one_or_none()
-    
-    if 
+    comment = db.execute(
+        select(Comment).where(Comment.id == comment_id)
+    ).scalar_one_or_none()
+
+    if comment is None:
+        raise HTTPException(status_code=404, detail="Comment not found")
+
+    if comment.author_id != user_id:
+        raise HTTPException(status_code=403)
+
+    db.execute(delete(Comment).where(Comment.id == comment_id))
+    db.commit()
+
+    return

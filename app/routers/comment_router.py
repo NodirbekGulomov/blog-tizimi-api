@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends
 
 from app.dependencies.auth_dependency import get_current_user
 from app.dependencies.db_dependency import get_db
-from app.schemas.comment_schemas import CommentRequest
+from app.schemas.comment_schemas import CommentRequest, CommentResponse
 from app.services import comment_service
 
 router = APIRouter(tags=["Comment"])
 
 
-@router.post("/posts/{id}")
+@router.post("/posts/{id}", status_code=201, response_model=CommentResponse)
 def create_comment(
     id: int,
     data: CommentRequest,
