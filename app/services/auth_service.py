@@ -13,9 +13,8 @@ from app.schemas.auth_schemas import LoginRequest, SignUpRequest
 
 
 def create_user(data: SignUpRequest, db: Session):
-    user = db.execute(
-        select(User.email).where(User.email == data.email)
-    ).scalar_one_or_none()
+    stmt = select(User.email).where(User.email == data.email)
+    user = db.execute(stmt).scalar_one_or_none()
 
     if user:
         raise HTTPException(status_code=409, detail="Email already exists")
@@ -37,7 +36,8 @@ def create_user(data: SignUpRequest, db: Session):
 
 
 def handle_login(data: LoginRequest, db: Session):
-    user = db.execute(select(User).where(User.email == data.email)).scalar_one_or_none()
+    stmt = select(User).where(User.email == data.email)
+    user = db.execute(stmt).scalar_one_or_none()
 
     if user is None:
         raise HTTPException(status_code=401, detail="Email or password is not correct")

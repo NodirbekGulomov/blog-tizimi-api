@@ -7,7 +7,7 @@ from app.schemas.comment_schemas import CommentRequest, CommentResponse
 
 
 def create_comment(post_id: int, data: CommentRequest, user_id: int, db: Session):
-    post = db.execute(select(Post).where(Post.id == post_id)).scalar_one_or_none()
+    post = db.get(Post, post_id)
 
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -20,21 +20,19 @@ def create_comment(post_id: int, data: CommentRequest, user_id: int, db: Session
     db.add(comment_object)
     db.commit()
 
-    return CommentResponse.model_validate(comment_object)
+    return comment_object
 
 
 def delete_comment(comment_id: int, user_id: int, db: Session):
-    comment = db.execute(
-        select(Comment).where(Comment.id == comment_id)
-    ).scalar_one_or_none()
+    comment = db.get(Comment, comment_id)
 
     if comment is None:
         raise HTTPException(status_code=404, detail="Comment not found")
 
     if comment.author_id != user_id:
-        raise HTTPException(status_code=403)
+        raise HTTPException(status_code=403, detail="Forbidden")
 
-    db.execute(delete(Comment).where(Comment.id == comment_id))
+    db.delete(comment)
     db.commit()
 
     return

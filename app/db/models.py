@@ -17,10 +17,10 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 
     posts: Mapped[list["Post"]] = relationship(
-        back_populates="user", cascade="all, delete-orphan"
+        back_populates="user", cascade="all, delete-orphan", passive_deletes=True
     )
     comments: Mapped[list["Comment"]] = relationship(
-        back_populates="user", cascade="all, delete-orphan"
+        back_populates="user", cascade="all, delete-orphan", passive_deletes=True
     )
 
 
@@ -40,7 +40,7 @@ class Post(Base):
 
     user: Mapped["User"] = relationship(back_populates="posts")
     comments: Mapped[list["Comment"]] = relationship(
-        back_populates="post", cascade="all, delete-orphan"
+        back_populates="post", cascade="all, delete-orphan", passive_deletes=True
     )
 
 
