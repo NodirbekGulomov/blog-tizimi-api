@@ -16,3 +16,12 @@ def create_comment(
     db=Depends(get_db),
 ):
     return comment_service.create_comment(id, data, current_user.id, db)
+
+
+@router.delete("/comments/{id}", status_code=204)
+def delete_comment(
+    id: int,
+    current_user=Depends(get_current_user),
+    db=Depends(get_db),
+):
+    return comment_service.delete_comment(id, current_user.id, db)

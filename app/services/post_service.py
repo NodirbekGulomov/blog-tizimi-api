@@ -5,7 +5,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.db import Post, User
-from app.schemas.post_schemas import PostRequest, PostUpdateRequest
+from app.schemas.post_schemas import PostRequest, PostResponse, PostUpdateRequest
 
 
 def create_post(data: PostRequest, user_id: int, db: Session):
@@ -16,19 +16,18 @@ def create_post(data: PostRequest, user_id: int, db: Session):
 
     post_data = data.model_dump()
     post_data["author_id"] = user_id
+    post_object = Post(**post_data)
 
-    db.add(Post(**post_data))
+    db.add(post_object)
     db.commit()
 
-    return {"message": "Post created"}
+    return PostResponse.model_validate(post_object)
 
 
 def get_all_posts(user_id: int, db: Session):
-    user = db.execute(select(Post).where(Post.author_id == user_id)).scalars()
+    post = db.execute(select(Post).where(Post.author_id == user_id)).scalars()
 
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication required")
-    return user
+    return PostResponse.model_validate(post)
 
 
 def get_post(post_id: int, db: Session):
@@ -37,7 +36,7 @@ def get_post(post_id: int, db: Session):
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
 
-    return post
+    return PostResponse.model_validate(post)
 
 
 def update_post(post_id: int, data: PostUpdateRequest, user_id: int, db: Session):
@@ -60,7 +59,7 @@ def update_post(post_id: int, data: PostUpdateRequest, user_id: int, db: Session
     db.commit()
     db.refresh(post)
 
-    return {"message": "Post updated"}
+    return PostRequest.model_validate(post)
 
 
 def delete_post(post_id: int, user_id, db: Session):
@@ -75,4 +74,4 @@ def delete_post(post_id: int, user_id, db: Session):
     db.execute(delete(Post).where(Post.id == post_id))
     db.commit()
 
-    return {"message": "Post deleted"}
+    return

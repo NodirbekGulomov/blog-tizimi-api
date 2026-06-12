@@ -17,11 +17,11 @@ class SignUpRequest(BaseModel):
     password: str
 
 
-class SignInResponse(BaseModel):
+class LoginResponse(BaseModel):
     access_token: str
     refresh_token: str
 
 
-class SignInRequest(BaseModel):
+class LoginRequest(BaseModel):
     email: str
     password: str

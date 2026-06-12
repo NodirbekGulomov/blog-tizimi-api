@@ -9,7 +9,7 @@ from app.services import post_service
 router = APIRouter(tags=["Post router"])
 
 
-@router.post("/posts")
+@router.post("/posts", status_code=201, response_model=PostResponse)
 def create_post(
     data: PostRequest,
     current_user: CurrentUser = Depends(get_current_user),
@@ -35,7 +35,7 @@ def get_post(
     return post_service.get_post(id, current_user.id, db)
 
 
-@router.patch("/posts/{id}")
+@router.patch("/posts/{id}",response_model=PostResponse)
 def update_post(
     id: int,
     data: PostUpdateRequest,

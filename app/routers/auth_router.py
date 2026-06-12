@@ -4,8 +4,8 @@ from app.dependencies.auth_dependency import get_current_user
 from app.dependencies.db_dependency import get_db
 from app.schemas.auth_schemas import (
     CurrentUser,
-    SignInRequest,
-    SignInResponse,
+    LoginRequest,
+    LoginResponse,
     SignUpRequest,
     SignUpResponse,
 )
@@ -15,14 +15,14 @@ from app.services import auth_service, user_service
 router = APIRouter(tags=["User router"])
 
 
-@router.post("/auth/signup", response_model=SignUpResponse)
+@router.post("/auth/signup", status_code=201, response_model=SignUpResponse)
 def sign_up(data: SignUpRequest, db=Depends(get_db)):
     return auth_service.create_user(data, db)
 
 
-@router.post("/auth/signin", response_model=SignInResponse)
-def sign_in(data: SignInRequest, db=Depends(get_db)):
-    return auth_service.handle_sign_in(data, db)
+@router.post("/auth/login", status_code=201, response_model=LoginResponse)
+def sign_in(data: LoginRequest, db=Depends(get_db)):
+    return auth_service.handle_login(data, db)
 
 
 @router.get("/users/me", response_model=UserProfileResponse)

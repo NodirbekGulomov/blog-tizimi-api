@@ -9,7 +9,7 @@ from app.core.security import (
     verify_password,
 )
 from app.db import User
-from app.schemas.auth_schemas import SignInRequest, SignUpRequest
+from app.schemas.auth_schemas import LoginRequest, SignUpRequest
 
 
 def create_user(data: SignUpRequest, db: Session):
@@ -36,7 +36,7 @@ def create_user(data: SignUpRequest, db: Session):
     }
 
 
-def handle_sign_in(data: SignInRequest, db: Session):
+def handle_login(data: LoginRequest, db: Session):
     user = db.execute(select(User).where(User.email == data.email)).scalar_one_or_none()
 
     if user is None:

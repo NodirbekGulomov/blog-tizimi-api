@@ -21,3 +21,9 @@ def create_comment(post_id: int, data: CommentRequest, user_id: int, db: Session
     db.commit()
 
     return {"message": "Comment created"}
+
+
+def delete_comment(comment_id: int, user_id: int, db: Session):
+    comment = db.execute(select(Comment).where(Comment.id==comment_id)).scalar_one_or_none()
+    
+    if 
